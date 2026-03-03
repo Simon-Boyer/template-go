@@ -30,4 +30,7 @@ jobs:
       if: github.ref == 'refs/heads/main'
       run: |
         IMAGE=$(echo ghcr.io/$GITHUB_REPOSITORY:$GITHUB_SHA | tr '[:upper:]' '[:lower:]')
+        IMAGE_LATEST=$(echo ghcr.io/$GITHUB_REPOSITORY:latest | tr '[:upper:]' '[:lower:]')
         docker push $IMAGE
+        docker tag $IMAGE $IMAGE_LATEST
+        docker push $IMAGE_LATEST
