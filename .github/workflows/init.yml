@@ -22,7 +22,7 @@ jobs:
         run: |
           echo "Replacing all instances of 'template-go' with '$REPO_NAME'"
           # Find all files and replace
-          find . -type f ! -path '*/.*' ! -name '.*' -print0 | xargs -0 sed -i "s|template-go|$REPO_NAME|g"
+          find . -type f ! -path './.git/*' -print0 | xargs -0 sed -i "s|template-go|$REPO_NAME|g"
           mv cmd/template-go cmd/$REPO_NAME
 
       - name: Delete init workflow

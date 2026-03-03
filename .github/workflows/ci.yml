@@ -1,0 +1,29 @@
+on:
+  - push
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-push:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v6    
+    - name: unit tests
+      run: go test ./...
+    - name: build binary
+      if: github.ref != 'main'
+      run: go build ./cmd/...
+    - uses: buildpacks/github-actions/setup-pack@v5.0.0
+      if: github.ref == 'main'
+    - name: build image
+      run: pack build ghcr.io/$GITHUB_REPOSITORY:$GITHUB_SHA -B paketobuildpacks/builder-jammy-buildpackless-static -b paketo-buildpacks/go@4.19.7 --trust-extra-buildpacks
+      if: github.ref == 'main'
+    - name: connect to registry
+      if: github.ref == 'main'
+      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+    - name: push image
+      if: github.ref == 'main'
+      run: docker push ghcr.io/$GITHUB_REPOSITORY:$GITHUB_SHA
