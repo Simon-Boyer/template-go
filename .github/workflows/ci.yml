@@ -19,7 +19,7 @@ jobs:
     - uses: buildpacks/github-actions/setup-pack@v5.0.0
       if: github.ref == 'refs/heads/main'
     - name: build image
-      run: pack build ghcr.io/$GITHUB_REPOSITORY:$GITHUB_SHA -B paketobuildpacks/builder-jammy-buildpackless-static -b paketo-buildpacks/go@4.19.7 --trust-extra-buildpacks
+      run: pack build ghcr.io/$GITHUB_REPOSITORY:$GITHUB_SHA -B paketobuildpacks/builder-jammy-buildpackless-static -b paketo-buildpacks/go@4.19.7
       if: github.ref == 'refs/heads/main'
     - name: connect to registry
       if: github.ref == 'refs/heads/main'
