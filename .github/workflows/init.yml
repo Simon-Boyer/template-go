@@ -15,11 +15,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set repository full name
-        run: echo "REPO_NAME=${GITHUB_REPOSITORY}" >> $GITHUB_ENV
-
       - name: Replace template references
         run: |
+          REPO_NAME=$(echo $GITHUB_REPOSITORY | cut -d '/' -f 2)
           echo "Replacing all instances of 'template-go' with '$REPO_NAME'"
           # Find all files and replace
           find . -type f ! -path './.git/*' -print0 | xargs -0 sed -i "s|template-go|$REPO_NAME|g"
@@ -27,6 +25,9 @@ jobs:
 
       - name: Delete init workflow
         run: rm .github/workflows/init.yml
+
+      - name: Enable workflow
+        run: mv .github/workflows/ci.yml.disabled .github/workflows/ci.yml
 
       - name: Commit changes
         run: |
